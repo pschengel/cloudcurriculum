@@ -1,0 +1,163 @@
+version: "3.9"
+
+services:
+
+  mongo_products:
+    container_name: mongo_products
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    # volumes:
+    #   - ./mongodata:/data/db
+    networks:
+      - cloud_curriculum
+
+  postgres_orders:
+    container_name: postgres_orders
+    image: postgres:12
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # volumes:
+    #   - ./pgdata:/var/lib/postgresql/data
+    networks:
+      - cloud_curriculum
+    restart: always
+  
+  postgres_users:
+    container_name: postgres_users
+    image: postgres:12
+    ports: #for multiple instances of PostgreSQL on same host.
+      - "5433:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      - postgres_orders
+    restart: always
+    # volumes: #just to persist data
+    #   - ./pgdata2:/var/lib/postgresql/data
+    networks:
+      - cloud_curriculum      
+
+  user_service:
+    container_name: user_service
+    build:
+        dockerfile: Dockerfile
+        context: ./user_service
+    restart: always
+    ports:
+      - "4001:4001"
+    environment:
+      - DB_TYPE=postgres
+      - PG_USER=postgres
+      - PG_PASSWORD=postgres
+      - PG_DB=postgres
+      - PG_PORT=5432
+      - PG_HOST=postgres_users
+      # - DB_URL=postgresql://postgres:postgres@postgres_orders:5432/postgres
+    depends_on:
+      - postgres_users
+    networks:
+      - cloud_curriculum
+
+
+
+  product_service:
+    container_name: product_service
+    build: ./product_service
+    restart: always
+    ports:
+      - "4002:4002"
+    environment:
+      - MONGO_USER=mongo
+      - MONGO_PASSWORD=mongo
+      - MONGO_DB=mongo
+    depends_on:
+      - mongo_products
+    networks:
+      - cloud_curriculum  
+
+  order_service:
+    container_name: order_service
+    build: ./order_service
+    restart: always
+    ports:
+      - "4000:4000"
+    environment:
+      - DB_URL=postgresql://postgres:postgres@postgres_orders:5432/postgres
+      - USER_SERVICE_HOST=user_service
+      - USER_SERVICE_PORT=4001
+      - PRODUCT_CATALOG_SERVICE_HOST=product_service
+      - PRODUCT_CATALOG_SERVICE_PORT=4002
+    depends_on:
+      - postgres_orders
+      - postgres_users
+      - rabbitmq
+    networks:
+      - cloud_curriculum
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - cloud_curriculum
+    
+
+  shipping_service:
+    container_name: shipping_service
+    build: ./shipping_service
+    restart: always
+    ports:
+      - "4003:4003"
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_QUEUE=shipping_queue
+    depends_on:
+      - rabbitmq
+    networks:
+      - cloud_curriculum
+
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - cloud_curriculum
+    depends_on:
+      - user_service
+      - product_service
+      - order_service
+
+
+# volumes:
+#   mongodata: {}
+#   pgdata: {}
+#   pgdata2: {}
+
+networks:
+  cloud_curriculum:
+

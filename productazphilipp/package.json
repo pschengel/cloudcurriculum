@@ -1,0 +1,14 @@
+{
+  "name": "productazphilipp",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"No tests yet...\""
+  },
+  "dependencies": {
+    "@azure/cosmos": "^3.17.3",
+    "mongodb": "^5.6.0",
+    "uuid": "^9.0.0"
+  }
+}
