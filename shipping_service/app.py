@@ -11,17 +11,13 @@ rabbitmq_queue = "shipping_queue"
 
 @app.route('/shipping', methods=['POST'])
 def process_shipping():
-    # Hier erfolgt die eigentliche Verarbeitung der Versandlogik
-    # ...
-    # Beispiel: Einfach nur eine Erfolgsmeldung zurückgeben
+
     return "Shipping processed successfully"
 
 
 def callback(ch, method, properties, body):
     print("Received shipping request: %r" % body)
-    # Hier können Sie die empfangene Nachricht verarbeiten
-    # ...
-    # Beispiel: Einfach nur eine Erfolgsmeldung drucken
+
     print("Shipping processed successfully")
 
 
