@@ -1,8 +1,12 @@
+
+
 const { CosmosClient } = require("@azure/cosmos")
 
 module.exports = async function (context, req) {
     context.log('JavaScript HTTP trigger function processed a request.');
 
+    const name = (req.query.name || (req.body && req.body.name));
+    const description = (req.query.description || (req.body && req.description.name));
     const id = (req.query.id || (req.body && req.body.id));
 
     const endpoint = "https://azure-db-philipp.documents.azure.com:443/";
@@ -13,10 +17,23 @@ module.exports = async function (context, req) {
 
     const { container } = await database.containers.createIfNotExists({ id: "Product" });
 
-    const response = await container.item(id, id).delete();
+    if (id) {
+        // Edit product
+        await container.items.upsert({
+            id: id,
+            name: name,
+            description: description,
+        });
+    } else {
+        // Add product
+        await container.items.create({
+            name: name,
+            description: description,
+        });
+    }
 
-    const responseMessage = id
-        ? "ID " + id + " has been deleted successfully."
+    const responseMessage = name
+        ? name + ". This HTTP triggered function executed successfully."
         : "This HTTP triggered function executed successfully.";
 
     context.res = {
@@ -24,4 +41,3 @@ module.exports = async function (context, req) {
     };
 }
 ;
-

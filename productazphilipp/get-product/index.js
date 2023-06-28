@@ -1,26 +1,24 @@
-const { MongoClient } = require("mongodb");
-const { v4: uuidv4 } = require("uuid");
-
-const url = ''
-const client = new MongoClient(url);
+const { CosmosClient } = require("@azure/cosmos")
 
 module.exports = async function (context, req) {
- 
-  await client.connect();
-  const database = client.db("Products")
-  const collection = database.collection("Products")
+    context.log('JavaScript HTTP trigger function processed a request.');
 
-  let product = await collection.findOne({ _id : req.params.id })
-  
-  if (!product){
-      return context.res = {
-          status:400,
-          body: "Couldnt find that product"
-      }
-  }
- 
-   return (context.res = {
-        // status: 200, /* Defaults to 200 */
-        body: product
-    });
-};
+    const endpoint = "https://azure-db-philipp.documents.azure.com:443/";
+    const key = "l31FevtivlF067vIjf2Wm0C0eJW52cwmvDh7i7G4MAA7f4fMAyCepQqBfgyGVv9oKnsDP4UOo3qcACDbkXBIRg==";
+    const client = new CosmosClient({ endpoint, key });
+
+    const { database } =  await client.databases.createIfNotExists({ id: "MyDatabase" });
+
+    const { container } = await database.containers.createIfNotExists({ id: "Product" });
+
+    const { resources } = await container.items
+        .query("SELECT * from c")
+        .fetchAll();
+
+    context.res = {
+        body: resources
+    };
+}
+;
+
+
