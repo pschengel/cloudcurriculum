@@ -3,11 +3,8 @@
 Cloud Curriculum, this repository serves for practicing cloud technologies.
 
 Overview local deployment:
-![local](https://github.com/pschengel/cloudcurriculumps/assets/136333034/8e5bd431-f812-4a69-a4ec-c1c12395bfeb)
+Four REST APIs are created, which are written in TypeScript (UserService, ProductService) and Python (ShippingService, OrderService). First they will be dockerized and then launched using a common Docker Compose. A PostgreSQL database is linked to each the User and Order Service, while MongoDB is linked to the ProductService. RabbitMQ will be added between Product- and ShippingService. To simplify the service access, ngix is used.
 
-
-Overview cloud deployment (simple)
-![azure](https://github.com/pschengel/cloudcurriculumps/assets/136333034/a8ea6d1d-a022-4467-98be-857ae6227992)
 
 
 
