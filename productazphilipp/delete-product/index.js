@@ -5,8 +5,8 @@ module.exports = async function (context, req) {
 
     const id = (req.query.id || (req.body && req.body.id));
 
-    const endpoint = "https://azure-db-philipp.documents.azure.com:443/";
-    const key = "l31FevtivlF067vIjf2Wm0C0eJW52cwmvDh7i7G4MAA7f4fMAyCepQqBfgyGVv9oKnsDP4UOo3qcACDbkXBIRg==";
+    const endpoint = "";
+    const key = "";
     const client = new CosmosClient({ endpoint, key });
 
     const { database } =  await client.databases.createIfNotExists({ id: "MyDatabase" });
