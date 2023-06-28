@@ -3,10 +3,11 @@
 Cloud Curriculum, this repository serves for practicing cloud technologies.
 
 Overview local deployment:
-<img src="[https://github.com/favicon.ico](https://github.com/pschengel/cloudcurriculumps/assets/136333034/2657e70f-2d73-4693-a5ba-9d61fcfa0b8f)" width="48">
-<img src="https://github.com/pschengel/cloudcurriculumps/assets/136333034/2657e70f-2d73-4693-a5ba-9d61fcfa0b8" width=300 align=right>
+![local](https://github.com/pschengel/cloudcurriculumps/assets/136333034/8e5bd431-f812-4a69-a4ec-c1c12395bfeb)
+
 
 Overview cloud deployment (simple)
-![azure](https://github.com/pschengel/cloudcurriculumps/assets/136333034/984a5215-d13a-423b-a8f4-c0e225e6d627)
+![azure](https://github.com/pschengel/cloudcurriculumps/assets/136333034/a8ea6d1d-a022-4467-98be-857ae6227992)
+
 
 
