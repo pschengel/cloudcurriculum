@@ -27,3 +27,4 @@ Topics:
 - "order_service_az" contains the reimplementage of the order service for usage as azure app service. A Docker images is pushed to a azure service registery. From there it is deployed to a web app. The order serice is connected with a azure cosmos db account aswell.
   - '/order', '/order/<string:order_id>'
 
+Azure Resource Groups: spc1bs-test, spc1bs-storage
